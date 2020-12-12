@@ -2,22 +2,26 @@
 
 window.addEventListener("load", function(){
    
-   // fetch("https://handlers.education.launchcode.org/static/planets.json").then(function(response){
-   //    response.json().then(function(json){
-   //       const div = document.getElementById("missionTarget");
-   //       div.innerHTML = `
-   //       <h2>Mission Destination</h2>
-   //          <ol>
-   //             <li>Name: ${json[2].name}</li>
-   //             <li>Diameter: ${json[2].diameter}</li>
-   //             <li>Star: ${json[2].star}</li>
-   //             <li>Distance from Earth: ${json[2].distance}</li>
-   //             <li>Number of Moons: ${json[2].moons}</li>
-   //          </ol>
-   //          <img src="${json[2].image}"></img>
-   //          `;
-   //    });
-   // });
+   fetch("https://handlers.education.launchcode.org/static/planets.json").then(function(response){
+      response.json().then(function(json){
+         const div = document.getElementById("missionTarget");
+         function getRandomInt(max){
+            return Math.floor(Math.random() * Math.floor(max));
+         }
+         index = getRandomInt(6);
+         div.innerHTML = `
+         <h2>Mission Destination</h2>
+            <ol>
+               <li>Name: ${json[index].name}</li>
+               <li>Diameter: ${json[index].diameter}</li>
+               <li>Star: ${json[index].star}</li>
+               <li>Distance from Earth: ${json[index].distance}</li>
+               <li>Number of Moons: ${json[index].moons}</li>
+            </ol>
+            <img src="${json[index].image}"></img>
+            `;
+      });
+   });
    
    let button = document.getElementById("formSubmit");
 
@@ -33,6 +37,11 @@ window.addEventListener("load", function(){
          event.preventDefault();
       }
       
+      if (!isNaN(pilotName.value) || !isNaN(copilotName.value)){
+         alert("Pilot & Copilot names should not be numbers.");
+         event.preventDefault();
+      }
+
       if (isNaN(fuelLevel.value) || isNaN(cargoMass.value)){
          alert("Fuel level & cargo mass should both be numbers.");
          event.preventDefault();
@@ -46,24 +55,23 @@ window.addEventListener("load", function(){
 
       let launchStatus = document.getElementById("launchStatus");
       let faultyItems = document.getElementById("faultyItems");
+      let fuelStatus = document.getElementById("fuelStatus");
+      let cargoStatus = document.getElementById("cargoStatus");
       
       if (fuelLevel.value < 10000){
-         fuelLevel.innerHTML = `Fuel level of ${fuelLevel} too low for launch.`
+         fuelStatus.innerHTML = `Fuel level too low for launch.`
          launchStatus.style.color = "red";
          launchStatus.innerHTML =  `Shuttle not ready for launch.`
          faultyItems.style.visibility = "visible";
-      } 
-      
-      // if (cargoMass.value > 10000){
-      //    cargoMass.innerHTML = `Cargo mass is too high for launch.`
-      //    launchStatus.style.color = "red";
-      //    launchStatus.innerHTML =  `Shuttle not ready for launch.`
-      //    faultyItems.style.visibility = "visible";
-      // } 
-      // else {
-      //    launchStatus.innerHTML = `Shuttle is ready for launch`;
-      //    launchStatus.style.color = "green";
-      // }
+      } else if (cargoMass.value > 10000){
+         cargoStatus.innerHTML = `Cargo mass is too high for launch.`
+         launchStatus.style.color = "red";
+         launchStatus.innerHTML =  `Shuttle not ready for launch.`
+         faultyItems.style.visibility = "visible";
+      } else {
+         launchStatus.innerHTML = `Shuttle is ready for launch`;
+         launchStatus.style.color = "green";
+      }
 
    })
 })
